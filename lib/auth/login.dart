@@ -125,7 +125,7 @@ class _LoginState extends State<Login> {
                           context: context,
                           dialogType: DialogType.info,
                           animType: AnimType.rightSlide,
-                          title: 'Error',
+                          title: 'Info',
                           desc: 'A link has been sent to your email. Please check your email',
                         ).show();
                       }catch(e){

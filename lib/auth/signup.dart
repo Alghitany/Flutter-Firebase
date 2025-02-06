@@ -138,11 +138,6 @@ class _SignupState extends State<Signup> {
                   }
                 },),
             Container(height: 20,),
-            const Text(
-              "Or Login With",
-              textAlign: TextAlign.center,
-            ),
-            Container(height: 20,),
             InkWell(
               onTap: (){
                 Navigator.of(context).pushReplacementNamed("Login");

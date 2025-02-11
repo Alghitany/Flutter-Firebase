@@ -64,6 +64,7 @@ class _MyAppState extends State<MyApp> {
         "Login" : (context) => const Login(),
         "Homepage" : (context) => const HomePage(),
         "AddCategory" : (context) => const AddCategory(),
+        "FilterFirestore" : (context) => const FilterFirestore(),
       },
     );
   }

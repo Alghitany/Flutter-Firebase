@@ -1,19 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/customButtonAuth.dart';
 import '../components/customTextFieldAdd.dart';
 
 
-class AddCategory extends StatefulWidget {
-  const AddCategory({super.key});
+class EditCategory extends StatefulWidget {
+  final String docId;
+  final String oldName;
+  const EditCategory({super.key, required this.docId, required this.oldName});
 
   @override
-  State<AddCategory> createState() => _AddCategoryState();
+  State<EditCategory> createState() => _EditCategoryState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
+class _EditCategoryState extends State<EditCategory> {
 
   GlobalKey <FormState> formState = GlobalKey();
   TextEditingController name = TextEditingController();
@@ -22,13 +23,13 @@ class _AddCategoryState extends State<AddCategory> {
 
   bool isLoading = false;
 
-  addCategory() async {
+  editCategory() async {
     if (formState.currentState!.validate()){
       try{
         isLoading = true;
         setState(() {});
-        DocumentReference response = await categories.add(
-            {"name": name.text, "id": FirebaseAuth.instance.currentUser!.uid});
+        // await categories.doc(widget.docId).update({"name" : name.text});
+        await categories.doc(widget.docId).set({"name" : name.text},SetOptions(merge: true));
         Navigator.of(context).pushNamedAndRemoveUntil("Homepage", (route) => false);
       }catch(e){
         isLoading = false;
@@ -37,17 +38,22 @@ class _AddCategoryState extends State<AddCategory> {
       }
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+    name.text = widget.oldName;
+  }
   @override
   void dispose() {
     super.dispose();
     name.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: const Text("Add Category"),
+        title: const Text("Edit Category"),
       ),
       body: Form(
         key: formState,
@@ -68,10 +74,10 @@ class _AddCategoryState extends State<AddCategory> {
               ),
             ),
             CustomButtonAuth(
-              title: 'Add',
-            onPressed: (){
-              addCategory();
-            },)
+              title: 'Save',
+              onPressed: (){
+                editCategory();
+              },)
           ],
         ),
       ),

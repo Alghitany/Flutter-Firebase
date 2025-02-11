@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:week2/auth/login.dart';
 import 'package:week2/auth/signup.dart';
 import 'package:week2/categories/add.dart';
+import 'package:week2/filter.dart';
 import 'package:week2/homepage.dart';
 
 import 'firebase_options.dart';
@@ -54,7 +55,10 @@ class _MyAppState extends State<MyApp> {
         )
       ),
       debugShowCheckedModeBanner: false,
-      home: (FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser!.emailVerified) ? const HomePage() : const Login(),
+      home:
+      // (FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser!.emailVerified) ?
+      // const HomePage() : const Login(),
+      const FilterFirestore(),
       routes: {
         "Signup" : (context) => const Signup(),
         "Login" : (context) => const Login(),

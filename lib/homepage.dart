@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:week2/categories/edit.dart';
+import 'package:week2/note/view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -65,19 +67,26 @@ class _HomePageState extends State<HomePage> {
         ),
         itemBuilder: (BuildContext context, int index) {
             return InkWell(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> NoteView(categoryId: data[index].id,)));
+              },
               onLongPress: (){
                 AwesomeDialog(
                   context: context,
                   dialogType: DialogType.warning,
                   animType: AnimType.rightSlide,
                   title: 'Error',
-                  desc: 'Are you sure about deleting this document ?',
-                  btnOkOnPress: ()async{
+                  desc: 'Select your option!',
+                  btnCancelText: 'Delete',
+                  btnOkText: 'Edit',
+                  btnCancelOnPress: () async {
                     await FirebaseFirestore.instance.collection("categories").doc(data[index].id).delete();
                     Navigator.of(context).pushReplacementNamed("Homepage");
                   },
-                  btnCancelOnPress: (){
-                    print("Cancelled");
+                  btnOkOnPress: ()async{
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context)=> EditCategory(docId: data[index].id,
+                            oldName: data[index]['name'])));
                   }
                 ).show();
               },

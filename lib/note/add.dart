@@ -1,35 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:week2/note/view.dart';
 
 import '../components/customButtonAuth.dart';
 import '../components/customTextFieldAdd.dart';
 
 
-class AddCategory extends StatefulWidget {
-  const AddCategory({super.key});
+class AddNote extends StatefulWidget {
+  final String docId;
+  const AddNote({super.key, required this.docId});
 
   @override
-  State<AddCategory> createState() => _AddCategoryState();
+  State<AddNote> createState() => _AddNoteState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
+class _AddNoteState extends State<AddNote> {
 
   GlobalKey <FormState> formState = GlobalKey();
-  TextEditingController name = TextEditingController();
+  TextEditingController note = TextEditingController();
 
-  CollectionReference categories = FirebaseFirestore.instance.collection('categories');
 
   bool isLoading = false;
 
-  addCategory() async {
+  addNote() async {
+    CollectionReference collectionNote =
+    FirebaseFirestore.instance.collection('categories')
+        .doc(widget.docId)
+        .collection("note");
     if (formState.currentState!.validate()){
       try{
         isLoading = true;
         setState(() {});
-        DocumentReference response = await categories.add(
-            {"name": name.text, "id": FirebaseAuth.instance.currentUser!.uid});
-        Navigator.of(context).pushNamedAndRemoveUntil("Homepage", (route) => false);
+        DocumentReference response = await collectionNote.add(
+            {"note": note.text});
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => NoteView(categoryId: widget.docId)));
       }catch(e){
         isLoading = false;
         setState(() {});
@@ -40,14 +44,14 @@ class _AddCategoryState extends State<AddCategory> {
   @override
   void dispose() {
     super.dispose();
-    name.dispose();
+    note.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: const Text("Add Category"),
+        title: const Text("Add Note"),
       ),
       body: Form(
         key: formState,
@@ -57,8 +61,8 @@ class _AddCategoryState extends State<AddCategory> {
             Container(
               padding: const EdgeInsets.symmetric( vertical: 20,horizontal: 25),
               child: CustomTextFormFieldAdd(
-                  hintText : "Enter Name",
-                  myController: name,
+                  hintText : "Enter Your Note",
+                  myController: note,
                   validator : (val) {
                     if (val == ""){
                       return "Can't be empty";
@@ -69,9 +73,9 @@ class _AddCategoryState extends State<AddCategory> {
             ),
             CustomButtonAuth(
               title: 'Add',
-            onPressed: (){
-              addCategory();
-            },)
+              onPressed: (){
+                addNote();
+              },)
           ],
         ),
       ),

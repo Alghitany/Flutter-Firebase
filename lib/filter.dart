@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FilterFirestore extends StatefulWidget {
@@ -11,18 +10,18 @@ class FilterFirestore extends StatefulWidget {
 
 class _FilterFirestoreState extends State<FilterFirestore> {
   List<QueryDocumentSnapshot> data= [];
-  IntialData() async{
+  initialData() async{
     CollectionReference users = FirebaseFirestore.instance.collection("users");
     QuerySnapshot usersData = await users.where("lang", arrayContainsAny: ['fr']).get();
-    usersData.docs.forEach((element){
+    for (var element in usersData.docs) {
       data.add(element);
-    });
+    }
   setState(() {});
   }
   @override
   void initState() {
     super.initState();
-    IntialData();
+    initialData();
 
   }
   @override
@@ -31,23 +30,21 @@ class _FilterFirestoreState extends State<FilterFirestore> {
       appBar: AppBar(
         title: const Text('Filter'),
       ),
-      body: Container(
-        child: ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context,i){
-              return Card(
-                child: ListTile(
-                  subtitle: Text("age : ${data[i]['age']}  "),
-                  title: Text(
-                    data[i]['username'],
-                    style: TextStyle(
-                      fontSize: 30
-                    ),
+      body: ListView.builder(
+          itemCount: data.length,
+          itemBuilder: (context,i){
+            return Card(
+              child: ListTile(
+                subtitle: Text("age : ${data[i]['age']}  "),
+                title: Text(
+                  data[i]['username'],
+                  style: const TextStyle(
+                    fontSize: 30
                   ),
                 ),
-              );
-            }),
-      ),
+              ),
+            );
+          }),
 
     );
   }
